@@ -1,11 +1,10 @@
 from sys import argv
 from os import mkdir, system
-from xml.etree.ElementTree import TreeBuilder
 from yaml import safe_load
 from simple_term_menu import TerminalMenu
-import cupcake
+from cupcake import colors, Compile, config_exists, Install, templates
 
-color = cupcake.colors.success
+color = colors.success
 init = f"""{color}
   /$$$$$$                                          /$$                
  /$$__  $$                                        | $$                
@@ -39,70 +38,56 @@ install_message = f"{color}Latest version of sol installed!"
 def cupcake_factory(name):
     mkdir(f"{name}")
     init = open(f"{name}/config.yaml", "w")
-    init.write(cupcake.cupcake_config_template())
+    init.write(templates.greeter_config)
     mkdir(f"{name}/build")
     mkdir(f"{name}/contracts")
     init = open(f"{name}/contracts/Greeter.sol", "w")
-    init.write(cupcake.contract_template())
+    init.write(templates.greeter_contract)
     mkdir(f"{name}/deploy")
     init = open(f"{name}/deploy/deploy.py", "w")
-    init.write(cupcake.deploy_template())
+    init.write(templates.deploy_script)
     mkdir(f"{name}/tests")
     init = open(f"{name}/tests/tests.py", "w")
-    init.write(cupcake.tests_template())
-    init_message = f"""{color}{name} environment has been created!
-
-cd {name}
-"""
+    init.write(templates.greeter_tests)
+    init_message = f"{color}{name} environment has been created!\n\ncd {name}\n"
     print(init_message)
 
 def empty_project(name):
     mkdir(f"{name}")
     init = open(f"{name}/config.yaml", "w")
-    init.write(cupcake.project_config_template())
+    init.write(templates.empty_config)
     mkdir(f"{name}/build")
     mkdir(f"{name}/contracts")
     init = open(f"{name}/contracts/Contract.sol", "w")
-    init.write(cupcake.empty_contract_template())
+    init.write(templates.empty_contract)
     mkdir(f"{name}/deploy")
     init = open(f"{name}/deploy/deploy.py", "w")
-    init.write(cupcake.deploy_template())
+    init.write(templates.deploy_script)
     mkdir(f"{name}/tests")
     init = open(f"{name}/tests/tests.py", "w")
-    init.write(cupcake.empty_tests_template())
-    init_message = f"""{color}{name} environment has been created!
-
-cd {name}
-"""
+    init.write(templates.empty_tests)
+    init_message = f"{color}{name} environment has been created!\n\ncd {name}\n"
     print(init_message)
 
 def script_workspace(name):
     mkdir(f"{name}")
     init = open(f"{name}/config.yaml", "w")
-    init.write(cupcake.script_config_template())
+    init.write(templates.workspace_config)
     mkdir(f"{name}/abi")
     mkdir(f"{name}/scripts")
     init = open(f"{name}/scripts/scripts.py", "w")
-    init.write(cupcake.scripts_workspace_template())
-    init_message = f"""{color}{name} workspace has been created!
-
-cd {name}
-"""
+    init.write(templates.workspace_scripts)
+    init_message = f"{color}{name} workspace has been created!\n\ncd {name}\n"
     print(init_message)
 
 def bake():
     init = open("config.yaml", "r")
     config_file = safe_load(init)
     try:
-        if config_file["Solidity"]["Source"] != None:
-            sourceBool = True
-    except:
-        sourceBool = False
-    if sourceBool == True:
-        cupcake.Compile()
+        Compile()
         print(bake_message)
-    else:
-        print(f"{cupcake.colors.fail}Failed to bake cupcakes")
+    except:
+        print(f"{colors.fail}Failed to bake cupcakes")
 
 def frost():
     try:
@@ -113,7 +98,7 @@ def frost():
     if sourceBool == True:
         exec(open("tests/tests.py").read())
     else:
-        print(f"{cupcake.colors.fail}Failed to frost cupcakes")
+        print(f"{colors.fail}Failed to frost cupcakes")
 
 def serve():
     try:
@@ -124,7 +109,7 @@ def serve():
     if sourceBool == True:
         exec(open("deploy/deploy.py").read())
     else:
-        print(f"{cupcake.colors.fail}Failed to serve cupcakes")
+        print(f"{colors.fail}Failed to serve cupcakes")
 
 def script():
     try:
@@ -134,21 +119,21 @@ def script():
         sourceBool = True
     except:
         sourceBool = False
-        print(f"{cupcake.colors.fail}Failed to shop cupcakes")
+        print(f"{colors.fail}Failed to shop cupcakes")
     if sourceBool == True:
         exec(open(f"scripts/{source}.py").read())
 
 def install():
     try:
-        cupcake.Install()
+        Install()
         print(install_message)
     except:
-        print(f"{cupcake.colors.fail}Failed to prep cupcakes")
+        print(f"{colors.fail}Failed to prep cupcakes")
 
 def main():
     args = argv[1:]
     if len(args) == 0:
-        if cupcake.config_exists() != True:
+        if config_exists() != True:
             print(init)
             index = menu.show()
             choice = options[index]
