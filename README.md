@@ -82,24 +82,24 @@ cupcake shop
 | Function | Parameters |
 | --- | --- |
 | `Account(provider)` | (Optional) `Provider(type)` |
-| `Compile()` | Reference config.yaml |
+| `Compile(source)` | (Optional) `"Contract"` |
 | `Contract(provider, address, abi)` | `Provider(type)`, `0x...`, "[]" |
-| `Deploy(provider, keys)` | `Provider(type)`, (Optional) `Account()` |
-| `Install()` | Reference config.yaml |
+| `Deploy(source, provider, key_pair)` | `"contract"`, `Provider(type)`, (Optional) `Account()` |
+| `Install(version)` | (Optional) `0.0.0` |
 | `Provider(type)` | [`"Custom"`, `"Ganache"`] |
 | `Read(contract, function, args, expect)` | `Contract(provider, address, abi)`, `"function"`, (Optional) `"args"`, (Optional) `<expect>` |
-| `Send(provider, to, amount, sender, keys, chainId)` | `Provider(type)`, `0x...`, `eth(1)`, (Optional) `Account()[1]`, (Optional) `Account()`, (Optional) `chainId` |
-| `Write(contract, function, args, value, caller, keys, provider)` | `Contract(provider, address, abi)`, `"function"`, (Optional) `"args"`, (Optional) `eth(1)`, (Optional) `Account()[1]`, (Optional) `Account()`, (Optional) `Provider(type)` |
+| `Send(provider, to, amount, sender, key_pair, chain)` | `Provider(type)`, `0x...`, `eth(1)`, (Optional) `Account()[1]`, (Optional) `Account()`, (Optional) `1` |
+| `Write(contract, function, args, value, caller, key_pair, provider)` | `Contract(provider, address, abi)`, `"function"`, (Optional) `"args"`, (Optional) `eth(1)`, (Optional) `Account()[1]`, (Optional) `Account()`, (Optional) `Provider(type)` |
 
 #
 
 ### `Account(provider)`
-The account function will convert a private key into a public key without any parameter argument or derive accounts from the provider. Returns keys `Account()` and public key `Account()[1]` from the private key in .env or public addresses from a provider as `Account(provider)[1]` through `Account(provider)[9]`.
+The account function will convert a private key into a public key without any parameter argument or derive accounts from the provider. Returns key_pair `Account()` and public key `Account()[1]` from the private key in .env or public addresses from a provider as `Account(provider)[1]` through `Account(provider)[9]`.
 
 #
 
-### `Compile()`
-Set the source contract in config.yaml to compile from. Compiler outputs contract ABIs to `build/`. Runs `Install()` before compiling. Returns the source bytecode `Compile()[0]` and source ABI `Compile()[1]`.
+### `Compile(source)`
+Optionally set source argument to return object. Compiler outputs contract ABIs to `build/`. Runs `Install()` before compiling. Returns the source bytecode `Compile()[0]` and source ABI `Compile()[1]` only if the source argument is set.
 
 #
 
@@ -108,13 +108,13 @@ Access an existing contract by giving a provider, contract address, and the cont
 
 #
 
-### `Deploy(provider, keys)`
-Will `Compile()` contracts and deploy contracts from the provider. Use `Account()` for the optional `keys` parameter. The first address from the provider is used if no `keys` are provided. Returns `contract` object.
+### `Deploy(source, provider, key_pair)`
+Will `Compile(source)` contracts and deploy contracts from the provider. Use `Account()` for the optional `key_pair` parameter. The first address from the provider is used if no `key_pair` are provided. Returns `contract` object.
 
 #
 
-### `Install()`
-Installs version of Solidity specified in config.yaml or latest version if not specified.
+### `Install(version)`
+Installs version of Solidity or latest version if not argument is not set.
 
 #
 
@@ -124,17 +124,17 @@ Installs version of Solidity specified in config.yaml or latest version if not s
 #
 
 ### `Read(contract, function, args, expect)`
-Use `Contract()` or `Deploy()` for the `contract` argument. Specify the `function` as a string. Optionally use `args` for the contract function arguments. Optionally use the `expect` argument to override the return.
+Use `Contract` or `Deploy` for the `contract` argument. Specify the `function` as a string. Optionally use `args` for the contract function arguments. Optionally use the `expect` argument to override the return.
 
 #
 
-### `Send(provider, to, amount, sender, keys, chainId)`
-Sends ether from an account. Use `Account(provider)[1]` for the `sender` or use `Account()` for the `keys`. Using `keys` does not require the `sender` argument. Use `chainId` only if `keys` is used. Supported `chainId` string arguments are `"mainnet"`, `"ropsten"`, `"kovan"`, and `"rinkeby"`. If no `chainId` is provided, the Ethereum mainnet is used. Logs transaction hash to `txs/`.  Returns `transaction hash`.
+### `Send(provider, to, amount, sender, key_pair, chain)`
+Sends ether from an account. Use `Account(provider)[1]` for the `sender` or use `Account()` for the `key_pair`. Using `key_pair` does not require the `sender` argument. Use `chain` only if `key_pair` is used. Supported `chain` string arguments are `"mainnet"`, `"ropsten"`, `"kovan"`, and `"rinkeby"`. If no `chain` is provided, the Ethereum mainnet is used. Logs transaction hash to `txs/`.  Returns `transaction hash`.
 
 #
 
-### `Write(contract, function, args, value, caller, keys, provider)`
-Use `Contract()` or `Deploy()` for the `contract` argument. Specify the `function` as a string. Optionally use `args` for the contract function's argument. Optionally use `value` if function requires ether. Use `caller` or use `keys` and `provider` depending on the setup. Logs transaction hash to `txs/`. Returns `transaction hash`.
+### `Write(contract, function, args, value, caller, key_pair, provider)`
+Use `Contract` or `Deploy` for the `contract` argument. Specify the `function` as a string. Optionally use `args` for the contract function's argument. Optionally use `value` if function requires ether. Use `caller` or use `key_pair` and `provider` depending on the setup. Logs transaction hash to `txs/`. Returns `transaction hash`.
 
 #
 
