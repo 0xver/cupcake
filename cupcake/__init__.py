@@ -1,4 +1,4 @@
-from solcx import install_solc, compile_standard
+from solcx import install_solc, compile_standard, set_solc_version, get_solc_version
 from web3 import Web3, HTTPProvider, EthereumTesterProvider
 from web3.middleware import geth_poa_middleware
 from json import load, dump, dumps
@@ -7,7 +7,6 @@ from glob import glob
 from dotenv import load_dotenv
 from pathlib import Path
 import os
-from cupcake import templates
 
 
 # Classes
@@ -30,36 +29,6 @@ class colors:
         fail = "\033[91m"
 
 
-# Templates
-
-def contract_template():
-    return templates.greeter_contract
-
-def tests_template():
-    return templates.tests
-
-def deploy_template():
-    return templates.deploy
-
-def empty_contract_template():
-    return templates.empty_contract
-
-def empty_tests_template():
-    return templates.empty_tests
-
-def scripts_workspace_template():
-    return templates.scripts_workspace
-
-def cupcake_config_template():
-    return templates.cupcake_config
-
-def project_config_template():
-    return templates.project_config
-
-def script_config_template():
-    return templates.script_config
-
-
 # Check if config exists
 
 def config_exists():
@@ -74,27 +43,21 @@ def config_exists():
 
 # Package functions
 
-def Install():
+def Install(v=None):
     print(colors.fail, end="\r")
-    init = open("config.yaml", "r")
-    config_file = safe_load(init)
-    try:
-        v = config_file["Solidity"]["Version"]
-    except:
-        v = None
     if v != None:
         s = str(v)
         install_solc(version=s)
     else:
         install_solc(version="latest")
 
-def Compile():
+def Compile(source=None):
     print(colors.fail, end="\r")
     Install()
     init = open("config.yaml", "r")
     config_file = safe_load(init)
-    source = config_file["Solidity"]["Source"]
     version = str(config_file["Solidity"]["Version"])
+    set_solc_version(version)
     compiler_standard = {
         "language": "Solidity",
         "sources": {},
@@ -149,32 +112,33 @@ def Compile():
         with open(f"build/{os.path.basename(name)[:-4]}.json", "w") as f:
             dump(abi, f)
             f.close()
-    abi = compiled["contracts"][f"{source}.sol"][source]["abi"]
-    bytecode = compiled["contracts"][f"{source}.sol"][source]["evm"]["bytecode"]["object"]
-    return bytecode, abi
+    if source != None:
+        abi = compiled["contracts"][f"{source}.sol"][source]["abi"]
+        bytecode = compiled["contracts"][f"{source}.sol"][source]["evm"]["bytecode"]["object"]
+        return bytecode, abi
 
-def Deploy(provider, keys=None):
+def Deploy(source=None, provider=None, key_pair=None):
     print(colors.fail, end="\r")
     config_init = open("config.yaml", "r")
     config_file = safe_load(config_init)
-    constructor_args = config_file["Solidity"]["Constructor"]
+    constructor_args = config_file["Constructors"][source]
     try:
         gas_limit = config_file["Gas"]["Limit"]
     except:
         gas_limit = None
-    compiled = Compile()
+    compiled = Compile(source)
     source_bytecode = compiled[0]
     source_abi = compiled[1]
-    if keys != None:
+    if key_pair != None:
         Token = provider.eth.contract(abi=source_abi, bytecode=source_bytecode)
         if constructor_args != None:
-            tx = Token.constructor(*constructor_args).buildTransaction({ "from" : keys[1] })
+            tx = Token.constructor(*constructor_args).buildTransaction({ "from" : key_pair[1] })
         else:
-            tx = Token.constructor().buildTransaction({ "from" : keys[1] })
+            tx = Token.constructor().buildTransaction({ "from" : key_pair[1] })
         if gas_limit != None:
             tx.update({ "gas" : gas_limit })
-        tx.update({ "nonce" : provider.eth.get_transaction_count(keys[1]) })
-        signed_tx = provider.eth.account.sign_transaction(tx, keys[0])
+        tx.update({ "nonce" : provider.eth.get_transaction_count(key_pair[1]) })
+        signed_tx = provider.eth.account.sign_transaction(tx, key_pair[0])
         tx_hash = provider.eth.send_raw_transaction(signed_tx.rawTransaction)
         tx_receipt = provider.eth.wait_for_transaction_receipt(tx_hash)
         contract = provider.eth.contract(address=tx_receipt.contractAddress, abi=source_abi)
@@ -189,7 +153,7 @@ def Deploy(provider, keys=None):
         contract = provider.eth.contract(address=tx_receipt.contractAddress, abi=source_abi)
         return contract
 
-def Contract(provider, address, abi):
+def Contract(provider=None, address=None, abi=None):
     print(colors.fail, end="\r")
     contract = provider.eth.contract(address=address, abi=abi)
     return contract
@@ -206,7 +170,7 @@ def Provider(p=None):
         provider = Web3(EthereumTesterProvider())
         from warnings import filterwarnings
         filterwarnings("ignore", category=ResourceWarning)
-        return provider 
+        return provider
 
 def Account(provider=None):
     print(colors.fail, end="\r")
@@ -235,7 +199,7 @@ def Account(provider=None):
         addr9 = provider.eth.accounts[8]
         return None, addr1, addr2, addr3, addr4, addr5, addr6, addr7, addr8, addr9
 
-def Read(contract, function, args=None, expect=None):
+def Read(contract=None, function=None, args=None, expect=None):
     if args != None:
         called = getattr(contract.functions, function)(args).call()
     else:
@@ -250,20 +214,20 @@ def Read(contract, function, args=None, expect=None):
         print(f"{colors.success}{called}")
         return called
 
-def Write(contract, function, args=None, value=None, caller=None, keys=None, provider=None):
+def Write(contract=None, function=None, args=None, value=None, caller=None, key_pair=None, provider=None):
     print(colors.fail, end="\r")
-    if keys != None:
+    if key_pair != None:
         if args != None and value == None:
-            tx = getattr(contract.functions, function)(args).buildTransaction({ "from" : keys[1] })
+            tx = getattr(contract.functions, function)(args).buildTransaction({ "from" : key_pair[1] })
         elif args != None and value != None:
-            tx = getattr(contract.functions, function)(args).buildTransaction({ "from" : keys[1], "value" : value })
+            tx = getattr(contract.functions, function)(args).buildTransaction({ "from" : key_pair[1], "value" : value })
         else:
             if value == None:
-                tx = getattr(contract.functions, function)().buildTransaction({ "from" : keys[1] })
+                tx = getattr(contract.functions, function)().buildTransaction({ "from" : key_pair[1] })
             else:
-                tx = getattr(contract.functions, function)().buildTransaction({ "from" : keys[1], "value" : value })
-        tx.update({ "nonce" : provider.eth.get_transaction_count(keys[1]) })
-        signed_tx = provider.eth.account.sign_transaction(tx, keys[0])
+                tx = getattr(contract.functions, function)().buildTransaction({ "from" : key_pair[1], "value" : value })
+        tx.update({ "nonce" : provider.eth.get_transaction_count(key_pair[1]) })
+        signed_tx = provider.eth.account.sign_transaction(tx, key_pair[0])
         tx_hash = provider.eth.send_raw_transaction(signed_tx.rawTransaction)
         tx_receipt = provider.eth.wait_for_transaction_receipt(tx_hash)
         try:
@@ -286,30 +250,30 @@ def Write(contract, function, args=None, value=None, caller=None, keys=None, pro
                 tx = getattr(contract.functions, function)().transact({ "from" : caller, "value" : value })
         return tx.hex()
 
-def Send(provider, to=None, amount=None, sender=None, keys=None, chainId=1):
+def Send(provider=None, to=None, amount=None, sender=None, key_pair=None, chain=1):
     print(colors.fail, end="\r")
-    if chainId == 1 or chainId == "mainnet":
-        chain = 1
-    elif chainId == "ropsten":
-        chain = 3
-    elif chainId == "kovan":
-        chain = 42
-    elif chainId == "rinkeby":
-        chain = 4
+    if chain == 1 or chain == "mainnet":
+        chain_id = 1
+    elif chain == "ropsten":
+        chain_id = 3
+    elif chain == "kovan":
+        chain_id = 42
+    elif chain == "rinkeby":
+        chain_id = 4
     else:
-        chain = chainId
-    if keys != None:
+        chain_id = chain
+    if key_pair != None:
         signed_tx = provider.eth.account.signTransaction({
             "maxFeePerGas" : 3000000000,
             "maxPriorityFeePerGas" : 2000000000,
             "to" : to,
-            "from" : keys[1],
+            "from" : key_pair[1],
             "value" : amount,
-            "nonce" : provider.eth.get_transaction_count(keys[1]),
+            "nonce" : provider.eth.get_transaction_count(key_pair[1]),
             "gas" : 100000,
-            "chainId" : chain
+            "chainId" : chain_id
             },
-            keys[0]
+            key_pair[0]
         )
         tx_hash = provider.eth.send_raw_transaction(signed_tx.rawTransaction)
         tx_receipt = provider.eth.wait_for_transaction_receipt(tx_hash)
