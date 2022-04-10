@@ -126,9 +126,11 @@ address = ""
 abi = loads("abi/<contract>.json")
 contract = Contract(provider, address, abi)
 
-# Blockchain interactions
-# Read(contract, "function", expect="expected")
-# tx = Write(contract, "function", args=eth(1), key_pair=key_pair, provider=provider)
+# Smart contracts
+Read(contract, "function", expect="expected")
+tx = Write(contract, "function", args=eth(1), key_pair=key_pair, provider=provider)
+
+# Send ETH
 # tx = Send(provider, to="0x...", amount=eth(1), key_pair=key_pair, chain="mainnet")
 
 # Notification
