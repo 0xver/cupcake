@@ -8,9 +8,6 @@ from dotenv import load_dotenv
 from pathlib import Path
 import os
 
-
-# Classes
-
 class colors:
     try:
         init = open("config.yaml", "r")
@@ -28,9 +25,6 @@ class colors:
         warning = "\033[93m"
         fail = "\033[91m"
 
-
-# Check if config exists
-
 def config_exists():
     try:
         init = open("config.yaml", "r")
@@ -39,9 +33,6 @@ def config_exists():
             return True
     except:
         return False
-
-
-# Package functions
 
 def Install(v=None):
     print(colors.fail, end="\r")
