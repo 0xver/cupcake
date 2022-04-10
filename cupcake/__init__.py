@@ -97,6 +97,8 @@ def Compile(source=None):
     init.close()
     f = open("build/compiler/interface.json", "r")
     json_standard = load(f)
+    os.remove("build/compiler/interface.json")
+    os.rmdir("build/compiler")
     compiled = compile_standard(json_standard, solc_version=version, allow_paths=".")
     for name in json_standard["sources"]:
         abi = compiled["contracts"][name][os.path.basename(name)[:-4]]["abi"]
