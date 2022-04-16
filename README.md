@@ -84,7 +84,7 @@ cupcake shop
 | `Account(provider)` | (Optional) `Provider(type)` |
 | `Compile(source)` | (Optional) `"Contract"` |
 | `Contract(provider, address, abi)` | `Provider(type)`, `0x...`, "[]" |
-| `Deploy(source, provider, key_pair)` | `"contract"`, `Provider(type)`, (Optional) `Account()` |
+| `Deploy(source, constructor, provider, key_pair)` | `"contract"`, (Optional) `constructor arguments`, `Provider(type)`, (Optional) `Account()` |
 | `Install(version)` | (Optional) `0.0.0` |
 | `Provider(type)` | [`"Custom"`, `"Ganache"`] |
 | `Read(contract, function, args, expect)` | `Contract(provider, address, abi)`, `"function"`, (Optional) `"args"`, (Optional) `<expect>` |
@@ -108,8 +108,8 @@ Access an existing contract by giving a provider, contract address, and the cont
 
 #
 
-### `Deploy(source, provider, key_pair)`
-Will `Compile(source)` contracts and deploy contracts from the provider. Use `Account()` for the optional `key_pair` parameter. The first address from the provider is used if no `key_pair` are provided. Returns `contract` object.
+### `Deploy(source, constructor, provider, key_pair)`
+Will `Compile(source)` contracts and deploy contracts from the provider. Optionally use an array of constructor arguments. Use `Account()` for the optional `key_pair` parameter. The first address from the provider is used if no `key_pair` are provided. Returns `contract` object.
 
 #
 
