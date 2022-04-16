@@ -1,4 +1,4 @@
-deploy_script = """from cupcake import Account, Deploy, Provider, msg
+empty_deploy = """from cupcake import Account, Deploy, Provider, msg
 
 # Provider
 provider = Provider("Custom")
@@ -16,8 +16,6 @@ msg(public_key=public_key, contract=contract)
 
 empty_config = """Solidity:
     Version: 0.8.0
-Constructors:
-    Contract:
 Network:
     Custom:
     Ganache: http://127.0.0.1:7545
@@ -54,9 +52,6 @@ contract = Deploy("Contract", provider)
 
 greeter_config = """Solidity:
     Version: 0.8.0
-Constructors:
-    Greeter:
-        - Hello world!
 Network:
     Custom:
     Ganache: http://127.0.0.1:7545
@@ -83,6 +78,22 @@ contract Greeter {
 }
 """
 
+greeter_deploy = """from cupcake import Account, Deploy, Provider, msg
+
+# Provider
+provider = Provider("Custom")
+
+# Accounts
+key_pair = Account()
+public_key = key_pair[1]
+
+# Deploy
+contract = Deploy("Greeter", ["Hello world!"], provider, key_pair)
+
+# Notification
+msg(public_key=public_key, contract=contract)
+"""
+
 greeter_tests = """from cupcake import Account, Deploy, Provider, Read, Write, eth, msg
 
 # Provider
@@ -94,7 +105,7 @@ addr1 = accounts[1]
 addr2 = accounts[2]
 
 # Deploy
-contract = Deploy("Greeter", provider)
+contract = Deploy("Greeter", ["Hello world!"], provider)
 
 # Tests
 Read(contract, "greeting", expect="Hello world!")
@@ -129,6 +140,9 @@ contract = Contract(provider, address, abi)
 # Smart contracts
 Read(contract, "function", expect="expected")
 tx = Write(contract, "function", args=eth(1), key_pair=key_pair, provider=provider)
+
+# Notification
+msg(tx=tx)
 
 # Send ETH
 # tx = Send(provider, to="0x...", amount=eth(1), key_pair=key_pair, chain="mainnet")
