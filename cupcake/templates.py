@@ -8,7 +8,7 @@ key_pair = Account()
 public_key = key_pair[1]
 
 # Deploy
-contract = Deploy("", provider, key_pair)
+contract = Deploy("", provider=provider, key_pair=key_pair)
 
 # Notification
 msg(public_key=public_key, contract=contract)
@@ -39,7 +39,7 @@ addr1 = accounts[1]
 addr2 = accounts[2]
 
 # Deploy
-contract = Deploy("Contract", provider)
+contract = Deploy("Contract", provider=provider)
 
 # Tests
 # Read(contract, "function", expect="expected")
