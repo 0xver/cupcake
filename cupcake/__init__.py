@@ -110,11 +110,11 @@ def Compile(source=None):
         bytecode = compiled["contracts"][f"{source}.sol"][source]["evm"]["bytecode"]["object"]
         return bytecode, abi
 
-def Deploy(source=None, provider=None, key_pair=None):
+def Deploy(source=None, args=None, provider=None, key_pair=None):
     print(colors.fail, end="\r")
     config_init = open("config.yaml", "r")
     config_file = safe_load(config_init)
-    constructor_args = config_file["Constructors"][source]
+    #constructor_args = config_file["Constructors"][source]
     try:
         gas_limit = config_file["Gas"]["Limit"]
     except:
@@ -124,8 +124,8 @@ def Deploy(source=None, provider=None, key_pair=None):
     source_abi = compiled[1]
     if key_pair != None:
         Token = provider.eth.contract(abi=source_abi, bytecode=source_bytecode)
-        if constructor_args != None:
-            tx = Token.constructor(*constructor_args).buildTransaction({ "from" : key_pair[1] })
+        if args != None:
+            tx = Token.constructor(*args).buildTransaction({ "from" : key_pair[1] })
         else:
             tx = Token.constructor().buildTransaction({ "from" : key_pair[1] })
         if gas_limit != None:
@@ -138,8 +138,8 @@ def Deploy(source=None, provider=None, key_pair=None):
         return contract
     else:
         Token = provider.eth.contract(abi=source_abi, bytecode=source_bytecode)
-        if constructor_args != None:
-            tx = Token.constructor(*constructor_args).transact({ "from" : provider.eth.accounts[0] })
+        if args != None:
+            tx = Token.constructor(*args).transact({ "from" : provider.eth.accounts[0] })
         else:
             tx = Token.constructor().transact({ "from" : provider.eth.accounts[0] })
         tx_receipt = provider.eth.wait_for_transaction_receipt(tx)
