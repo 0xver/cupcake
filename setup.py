@@ -6,7 +6,7 @@ readme = (file_path/"README.md").read_text()
 
 setup(
   name="cupcakes",
-  version="0.1.2",
+  version="0.1.3",
   description="Compile, test, deploy, and interact with smart contracts",
   long_description=readme,
   long_description_content_type="text/markdown",
@@ -18,7 +18,7 @@ setup(
     "console_scripts": ["cupcake=cupcake.cli:main"],
   },
   install_requires=[
-      "py-solc-x", "py-evm", "eth-tester", "web3", "PyYAML", "pathlib", "python-dotenv", "simple_term_menu",
+      "py-solc-x", "py-evm", "eth-tester", "web3", "PyYAML", "setuptools", "pathlib", "python-dotenv", "simple_term_menu",
   ],
   python_requires=">=3.9"
 )
