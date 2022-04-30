@@ -84,7 +84,7 @@ cupcake shop
 | `Account(provider)` | (Optional) `Provider(type)` |
 | `Compile(source)` | (Optional) `"Contract"` |
 | `Contract(provider, address, abi)` | `Provider(type)`, `0x...`, "[]" |
-| `Deploy(source, constructor, provider, key_pair)` | `"contract"`, (Optional) [`"constructor arguments"`], `Provider(type)`, (Optional) `Account()` |
+| `Deploy(source, constructor, provider, key_pair)` | `"Contract"`, (Optional) [`"constructor arguments"`], `Provider(type)`, (Optional) `Account()` |
 | `Install(version)` | (Optional) `0.0.0` |
 | `Provider(type)` | `"Custom"`, `"Ganache"` |
 | `Read(contract, function, args, expect)` | `Contract(provider, address, abi)`, `"function"`, (Optional) `"args"`, (Optional) `<expect>` |
