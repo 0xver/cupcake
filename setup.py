@@ -18,7 +18,7 @@ setup(
     "console_scripts": ["cupcake=cupcake.cli:main"],
   },
   install_requires=[
-      "py-solc-x", "py-evm", "eth-tester", "web3", "PyYAML", "setuptools", "python-dotenv", "simple_term_menu",
+      "py-solc-x", "py-evm", "eth-tester", "web3", "PyYAML", "python-dotenv", "simple_term_menu",
   ],
   python_requires=">=3.9"
 )
