@@ -44,10 +44,10 @@ def Install(v=None):
 
 def Compile(source=None):
     print(colors.fail, end="\r")
-    Install()
     init = open("config.yaml", "r")
     config_file = safe_load(init)
     version = str(config_file["Solidity"]["Version"])
+    Install(version)
     set_solc_version(version)
     compiler_standard = {
         "language": "Solidity",
