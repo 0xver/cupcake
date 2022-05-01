@@ -123,7 +123,7 @@ Network:
     Ganache: http://127.0.0.1:7545
 """
 
-workspace_scripts = """from cupcake import Account, Contract, Provider, Read, Send, Write, eth, loads, msg
+workspace_scripts = """from cupcake import Account, Contract, Provider, Read, Send, Write, eth, source, msg
 
 # Provider
 provider = Provider("Custom")
@@ -134,18 +134,18 @@ public_key = key_pair[1]
 
 # Contract
 address = ""
-abi = loads("abi/<contract>.json")
+abi = source("api/<contract>.json")
 contract = Contract(provider, address, abi)
 
 # Smart contracts
 Read(contract, "function", expect="expected")
-tx = Write(contract, "function", args=eth(1), key_pair=key_pair, provider=provider)
+tx = Write(contract, "function", args=eth(1), gas=20, key_pair=key_pair, provider=provider)
 
 # Notification
 msg(tx=tx)
 
 # Send ETH
-# tx = Send(provider, to="0x...", amount=eth(1), key_pair=key_pair, chain="mainnet")
+tx = Send(provider, to="0x...", amount=eth(0.001), gas=20, key_pair=key_pair, chain="mainnet")
 
 # Notification
 msg(tx=tx)
