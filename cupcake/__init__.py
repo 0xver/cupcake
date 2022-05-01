@@ -114,7 +114,6 @@ def Deploy(source=None, args=None, provider=None, key_pair=None):
     print(colors.fail, end="\r")
     config_init = open("config.yaml", "r")
     config_file = safe_load(config_init)
-    #constructor_args = config_file["Constructors"][source]
     try:
         gas_limit = config_file["Gas"]["Limit"]
     except:
@@ -207,7 +206,7 @@ def Read(contract=None, function=None, args=None, expect=None):
         print(f"{colors.success}{called}")
         return called
 
-def Write(contract=None, function=None, args=None, value=None, caller=None, key_pair=None, provider=None):
+def Write(contract=None, function=None, args=None, value=None, gas=None, caller=None, key_pair=None, provider=None):
     print(colors.fail, end="\r")
     if key_pair != None:
         if args != None and value == None:
@@ -220,6 +219,7 @@ def Write(contract=None, function=None, args=None, value=None, caller=None, key_
             else:
                 tx = getattr(contract.functions, function)().buildTransaction({ "from" : key_pair[1], "value" : value })
         tx.update({ "nonce" : provider.eth.get_transaction_count(key_pair[1]) })
+        tx.update({ "maxFeePerGas" : gas * 1000000000, "maxPriorityFeePerGas" : 2000000000 })
         signed_tx = provider.eth.account.sign_transaction(tx, key_pair[0])
         tx_hash = provider.eth.send_raw_transaction(signed_tx.rawTransaction)
         tx_receipt = provider.eth.wait_for_transaction_receipt(tx_hash)
@@ -243,7 +243,7 @@ def Write(contract=None, function=None, args=None, value=None, caller=None, key_
                 tx = getattr(contract.functions, function)().transact({ "from" : caller, "value" : value })
         return tx.hex()
 
-def Send(provider=None, to=None, amount=None, sender=None, key_pair=None, chain=1):
+def Send(provider=None, to=None, amount=None, gas=None, sender=None, key_pair=None, chain=1):
     print(colors.fail, end="\r")
     if chain == 1 or chain == "mainnet":
         chain_id = 1
@@ -257,13 +257,13 @@ def Send(provider=None, to=None, amount=None, sender=None, key_pair=None, chain=
         chain_id = chain
     if key_pair != None:
         signed_tx = provider.eth.account.signTransaction({
-            "maxFeePerGas" : 3000000000,
+            "maxFeePerGas" : gas * 1000000000,
             "maxPriorityFeePerGas" : 2000000000,
             "to" : to,
             "from" : key_pair[1],
             "value" : amount,
             "nonce" : provider.eth.get_transaction_count(key_pair[1]),
-            "gas" : 100000,
+            "gas" : 21000,
             "chainId" : chain_id
             },
             key_pair[0]
@@ -292,7 +292,7 @@ def msg(message=None, public_key=None, contract=None, tx=None):
     if message == "baked":
         print(f"{colors.success}Cupcakes have been successfully baked!")
 
-def loads(path):
+def source(path):
     print(colors.fail, end="\r")
     json_file = open(path, "r")
     json_data = load(json_file)
