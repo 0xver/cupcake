@@ -88,8 +88,8 @@ cupcake shop
 | `Install(version)` | (Optional) `0.0.0` |
 | `Provider(type)` | `"Custom"`, `"Ganache"` |
 | `Read(contract, function, args, expect)` | `Contract(provider, address, abi)`, `"function"`, (Optional) `"args"`, (Optional) `<expect>` |
-| `Send(provider, to, amount, sender, key_pair, chain)` | `Provider(type)`, `0x...`, `eth(1)`, (Optional) `Account()[1]`, (Optional) `Account()`, (Optional) `1` |
-| `Write(contract, function, args, value, caller, key_pair, provider)` | `Contract(provider, address, abi)`, `"function"`, (Optional) `"args"`, (Optional) `eth(1)`, (Optional) `Account()[1]`, (Optional) `Account()`, (Optional) `Provider(type)` |
+| `Send(provider, to, amount, gas, sender, key_pair, chain)` | `Provider(type)`, `0x...`, `eth(1)`, (Optional) `50`, (Optional) `Account()[1]`, (Optional) `Account()`, (Optional) `1` |
+| `Write(contract, function, args, value, gas, caller, key_pair, provider)` | `Contract(provider, address, abi)`, `"function"`, (Optional) `"args"`, (Optional) `eth(1)`, (Optional) `50`, (Optional) `Account()[1]`, (Optional) `Account()`, (Optional) `Provider(type)` |
 
 #
 
@@ -128,13 +128,13 @@ Use `Contract` or `Deploy` for the `contract` argument. Specify the `function` a
 
 #
 
-### `Send(provider, to, amount, sender, key_pair, chain)`
-Sends ether from an account. Use `Account(provider)[1]` for the `sender` or use `Account()` for the `key_pair`. Using `key_pair` does not require the `sender` argument. Use `chain` only if `key_pair` is used. Supported `chain` string arguments are `"mainnet"`, `"ropsten"`, `"kovan"`, and `"rinkeby"`. If no `chain` is provided, the Ethereum mainnet is used. Logs transaction hash to `txs/`.  Returns `transaction hash`.
+### `Send(provider, to, amount, gas, sender, key_pair, chain)`
+Sends ether from an account. Use `Account(provider)[1]` for the `sender` or use `Account()` for the `key_pair`. Using `key_pair` does not require the `sender` argument. Use `gas` and `chain` only if `key_pair` is used. Supported `chain` string arguments are `"mainnet"`, `"ropsten"`, `"kovan"`, and `"rinkeby"`. If no `chain` is provided, the Ethereum mainnet is used. Logs transaction hash to `txs/`.  Returns `transaction hash`.
 
 #
 
-### `Write(contract, function, args, value, caller, key_pair, provider)`
-Use `Contract` or `Deploy` for the `contract` argument. Specify the `function` as a string. Optionally use `args` for the contract function's argument. Optionally use `value` if function requires ether. Use `caller` or use `key_pair` and `provider` depending on the setup. Logs transaction hash to `txs/`. Returns `transaction hash`.
+### `Write(contract, function, args, value, gas, caller, key_pair, provider)`
+Use `Contract` or `Deploy` for the `contract` argument. Specify the `function` as a string. Optionally use `args` for the contract function's argument. Optionally use `value` if function requires ether. Use `caller` or use `gas`, `key_pair` and `provider` depending on the setup. Logs transaction hash to `txs/`. Returns `transaction hash`.
 
 #
 
@@ -174,7 +174,7 @@ Use `eth(value)` to convert ETH to WEI
 #
 
 ## Load ABI from json file
-Use `loads(abi/contract.json)` to return ABI
+Use `source(abi/contract.json)` to return ABI
 
 #
 
