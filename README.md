@@ -81,60 +81,60 @@ cupcake shop
 ## API
 | Function | Parameters |
 | --- | --- |
-| `Account(provider)` | (Optional) `Provider(type)` |
-| `Compile(source)` | (Optional) `"Contract"` |
-| `Contract(provider, address, abi)` | `Provider(type)`, `0x...`, "[]" |
-| `Deploy(source, constructor, provider, key_pair)` | `"Contract"`, (Optional) [`"constructor arguments"`], `Provider(type)`, (Optional) `Account()` |
-| `Install(version)` | (Optional) `0.0.0` |
-| `Provider(type)` | `"Custom"`, `"Ganache"` |
-| `Read(contract, function, args, expect)` | `Contract(provider, address, abi)`, `"function"`, (Optional) `"args"`, (Optional) `<expect>` |
-| `Send(provider, to, amount, gas, sender, key_pair, chain)` | `Provider(type)`, `0x...`, `eth(1)`, (Optional) `50`, (Optional) `Account()[1]`, (Optional) `Account()`, (Optional) `1` |
-| `Write(contract, function, args, value, gas, caller, key_pair, provider)` | `Contract(provider, address, abi)`, `"function"`, (Optional) `"args"`, (Optional) `eth(1)`, (Optional) `50`, (Optional) `Account()[1]`, (Optional) `Account()`, (Optional) `Provider(type)` |
+| `account(provider)` | (Optional) `provider(type)` |
+| `compile(source)` | (Optional) `"Contract"` |
+| `contract(provider, address, abi)` | `provider(type)`, `0x...`, "[]" |
+| `deploy(source, constructor, provider, key_pair)` | `"Contract"`, (Optional) [`"constructor arguments"`], `provider(type)`, (Optional) `account()` |
+| `install(version)` | (Optional) `0.0.0` |
+| `provider(type)` | `"Custom"`, `"Ganache"` |
+| `read(contract, function, args, expect)` | `contract(provider, address, abi)`, `"function"`, (Optional) `"args"`, (Optional) `<expect>` |
+| `send(provider, to, amount, gas, sender, key_pair, chain)` | `provider(type)`, `0x...`, `eth(1)`, (Optional) `50`, (Optional) `account()[1]`, (Optional) `account()`, (Optional) `1` |
+| `write(contract, function, args, value, gas, caller, key_pair, provider)` | `contract(provider, address, abi)`, `"function"`, (Optional) `"args"`, (Optional) `eth(1)`, (Optional) `50`, (Optional) `account()[1]`, (Optional) `account()`, (Optional) `provider(type)` |
 
 #
 
-### `Account(provider)`
-The account function will convert a private key into a public key without any parameter argument or derive accounts from the provider. Returns key_pair `Account()` and public key `Account()[1]` from the private key in .env or public addresses from a provider as `Account(provider)[1]` through `Account(provider)[9]`.
+### `account(provider)`
+The account function will convert a private key into a public key without any parameter argument or derive accounts from the provider. Returns key_pair `account()` and public key `account()[1]` from the private key in .env or public addresses from a provider as `account(provider)[1]` through `account(provider)[9]`.
 
 #
 
-### `Compile(source)`
-Optionally set source argument to return object. Compiler outputs contract ABIs to `build/`. Runs `Install()` before compiling. Returns the source bytecode `Compile()[0]` and source ABI `Compile()[1]` only if the source argument is set.
+### `compile(source)`
+Optionally set source argument to return object. Compiler outputs contract ABIs to `build/`. Runs `Install()` before compiling. Returns the source bytecode `compile()[0]` and source ABI `compile()[1]` only if the source argument is set.
 
 #
 
-### `Contract(provider, address, abi)`
+### `contract(provider, address, abi)`
 Access an existing contract by giving a provider, contract address, and the contract's ABI. Returns `contract` object.
 
 #
 
-### `Deploy(source, constructor, provider, key_pair)`
-Will `Compile(source)` contracts and deploy contracts from the provider. Optionally use an array of constructor arguments. Use `Account()` for the optional `key_pair` parameter. The first address from the provider is used if no `key_pair` are provided. Returns `contract` object.
+### `deploy(source, constructor, provider, key_pair)`
+Will `compile(source)` contracts and deploy contracts from the provider. Optionally use an array of constructor arguments. Use `account()` for the optional `key_pair` parameter. The first address from the provider is used if no `key_pair` are provided. Returns `contract` object.
 
 #
 
-### `Install(version)`
+### `install(version)`
 Installs version of Solidity or latest version if not argument is not set.
 
 #
 
-### `Provider(type)`
-`"Custom"` and `"Ganache"` are `type` arguments. `"Custom"` and `"Ganache"` types are defined in config.yaml. Use the built in local network with `Provider()`.
+### `provider(type)`
+`"Custom"` and `"Ganache"` are `type` arguments. `"Custom"` and `"Ganache"` types are defined in config.yaml. Use the built in local network with `provider()`.
 
 #
 
-### `Read(contract, function, args, expect)`
-Use `Contract` or `Deploy` for the `contract` argument. Specify the `function` as a string. Optionally use `args` for the contract function arguments. Optionally use the `expect` argument to override the return.
+### `read(contract, function, args, expect)`
+Use `contract()` or `deploy()` for the `contract` argument. Specify the `function` as a string. Optionally use `args` for the contract function arguments. Optionally use the `expect` argument to override the return.
 
 #
 
-### `Send(provider, to, amount, gas, sender, key_pair, chain)`
-Sends ether from an account. Use `Account(provider)[1]` for the `sender` or use `Account()` for the `key_pair`. Using `key_pair` does not require the `sender` argument. Use `gas` and `chain` only if `key_pair` is used. Supported `chain` string arguments are `"mainnet"`, `"ropsten"`, `"kovan"`, and `"rinkeby"`. If no `chain` is provided, the Ethereum mainnet is used. Logs transaction hash to `txs/`.  Returns `transaction hash`.
+### `send(provider, to, amount, gas, sender, key_pair, chain)`
+Sends ether from an account. Use `account(provider)[1]` for the `sender` or use `account()` for the `key_pair`. Using `key_pair` does not require the `sender` argument. Use `gas` and `chain` only if `key_pair` is used. Supported `chain` string arguments are `"mainnet"`, `"ropsten"`, `"kovan"`, and `"rinkeby"`. If no `chain` is provided, the Ethereum mainnet is used. Logs transaction hash to `txs/`.  Returns `transaction hash`.
 
 #
 
-### `Write(contract, function, args, value, gas, caller, key_pair, provider)`
-Use `Contract` or `Deploy` for the `contract` argument. Specify the `function` as a string. Optionally use `args` for the contract function's argument. Optionally use `value` if function requires ether. Use `caller` or use `gas`, `key_pair` and `provider` depending on the setup. Logs transaction hash to `txs/`. Returns `transaction hash`.
+### `write(contract, function, args, value, gas, caller, key_pair, provider)`
+Use `contract()` or `deploy()` for the `contract` argument. Specify the `function` as a string. Optionally use `args` for the contract function's argument. Optionally use `value` if function requires ether. Use `caller` or use `gas`, `key_pair` and `provider` depending on the setup. Logs transaction hash to `txs/`. Returns `transaction hash`.
 
 #
 
@@ -156,9 +156,9 @@ Add Ganache host and port in config.yaml
 Network:
     Ganache: http://127.0.0.1:7545
 ```
-Set the `Provider(type)` to Ganache
+Set the `provider(type)` to Ganache
 ```
-Provider("Ganache")
+provider("Ganache")
 ```
 
 #
@@ -197,7 +197,7 @@ Key:
 #
 
 ## Change config.yaml network names
-Change the config.yaml custom network name to enable `Provider("Infura")`
+Change the config.yaml custom network name to enable `provider("Infura")`
 ```
 Network:
     Infura:
