@@ -6,7 +6,7 @@ readme = (file_path/"README.md").read_text()
 
 setup(
   name="cupcakes",
-  version="0.1.7",
+  version="0.1.8",
   description="Compile, test, deploy, and interact with smart contracts",
   long_description=readme,
   long_description_content_type="text/markdown",
