@@ -1,14 +1,14 @@
-empty_deploy = """from cupcake import Account, Deploy, Provider, msg
+empty_deploy = """from cupcake import account, deploy, msg, provider
 
 # Provider
-provider = Provider("Custom")
+mainnet = provider("Custom")
 
 # Accounts
-key_pair = Account()
+key_pair = account()
 public_key = key_pair[1]
 
 # Deploy
-contract = Deploy("", provider=provider, key_pair=key_pair)
+contract = deploy("", provider=mainnet, key_pair=key_pair)
 
 # Notification
 msg(public_key=public_key, contract=contract)
@@ -28,23 +28,23 @@ pragma solidity ^0.8.0;
 contract Contract {}
 """
 
-empty_tests = """from cupcake import Account, Deploy, Provider, Read, Send, Write, eth, msg
+empty_tests = """from cupcake import account, deploy, eth, msg, provider, read, send, write
 
 # Provider
-provider = Provider()
+py_evm = provider()
 
 # Accounts
-accounts = Account(provider)
+accounts = account(py_evm)
 addr1 = accounts[1]
 addr2 = accounts[2]
 
 # Deploy
-contract = Deploy("Contract", provider=provider)
+contract = deploy("contract", provider=py_evm)
 
 # Tests
-# Read(contract, "function", expect="expected")
-# Write(contract, "function", caller=addr1)
-# Send(provider, to=addr2, amount=eth(2), sender=addr1)
+# read(contract, "function", expect="expected")
+# write(contract, "function", caller=addr1)
+# send(py_evm, to=addr2, amount=eth(2), sender=addr1)
 
 # Notification
 # msg("frosted")
@@ -78,39 +78,39 @@ contract Greeter {
 }
 """
 
-greeter_deploy = """from cupcake import Account, Deploy, Provider, msg
+greeter_deploy = """from cupcake import account, deploy, msg, provider
 
 # Provider
-provider = Provider("Custom")
+mainnet = provider("Custom")
 
 # Accounts
-key_pair = Account()
+key_pair = account()
 public_key = key_pair[1]
 
 # Deploy
-contract = Deploy("Greeter", ["Hello world!"], provider, key_pair)
+contract = deploy("Greeter", ["Hello world!"], mainnet, key_pair)
 
 # Notification
 msg(public_key=public_key, contract=contract)
 """
 
-greeter_tests = """from cupcake import Account, Deploy, Provider, Read, Write, eth, msg
+greeter_tests = """from cupcake import account, deploy, eth, msg, provider, read, write
 
 # Provider
-provider = Provider()
+py_evm = provider()
 
 # Accounts
-accounts = Account(provider)
+accounts = account(py_evm)
 addr1 = accounts[1]
 addr2 = accounts[2]
 
 # Deploy
-contract = Deploy("Greeter", ["Hello world!"], provider)
+contract = deploy("Greeter", ["Hello world!"], py_evm)
 
 # Tests
-Read(contract, "greeting", expect="Hello world!")
-Write(contract, "setGreeting", args="Hello!", caller=addr1)
-Read(contract, "greeting", expect="Hello!")
+read(contract, "greeting", expect="Hello world!")
+write(contract, "setGreeting", args="Hello!", caller=addr1)
+read(contract, "greeting", expect="Hello!")
 
 # Notification
 msg("frosted")
@@ -123,29 +123,29 @@ Network:
     Ganache: http://127.0.0.1:7545
 """
 
-workspace_scripts = """from cupcake import Account, Contract, Provider, Read, Send, Write, eth, source, msg
+workspace_scripts = """from cupcake import account, contract, eth, msg, provider, read, send, source, write
 
 # Provider
-provider = Provider("Custom")
+mainnet = provider("Custom")
 
 # Accounts
-key_pair = Account()
+key_pair = account()
 public_key = key_pair[1]
 
 # Contract
 address = ""
 abi = source("api/<contract>.json")
-contract = Contract(provider, address, abi)
+contract = contract(mainnet, address, abi)
 
 # Smart contracts
-Read(contract, "function", expect="expected")
-tx = Write(contract, "function", args=eth(1), gas=20, key_pair=key_pair, provider=provider)
+read(contract, "function", expect="expected")
+tx = write(contract, "function", args=eth(1), gas=20, key_pair=key_pair, provider=mainnet)
 
 # Notification
 msg(tx=tx)
 
 # Send ETH
-tx = Send(provider, to="0x...", amount=eth(0.001), gas=20, key_pair=key_pair, chain="mainnet")
+tx = send(provider, to="0x...", amount=eth(0.001), gas=20, key_pair=key_pair, chain="mainnet")
 
 # Notification
 msg(tx=tx)

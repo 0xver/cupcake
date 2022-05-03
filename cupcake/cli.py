@@ -2,10 +2,10 @@ from sys import argv
 from os import mkdir, system
 from yaml import safe_load
 from simple_term_menu import TerminalMenu
-from cupcake import colors, Compile, config_exists, Install, templates
+from cupcake import compiler, installer, templates, utils
+import pkg_resources
 
-color = colors.success
-init = f"""{color}
+init = f"""{utils.colors.success}
   /$$$$$$                                          /$$                
  /$$__  $$                                        | $$                
 | $$  \__/ /$$   /$$  /$$$$$$   /$$$$$$$  /$$$$$$ | $$   /$$  /$$$$$$ 
@@ -17,13 +17,14 @@ init = f"""{color}
                     | $$                                              
                     | $$                                              
                     |__/                                              
+v{pkg_resources.get_distribution("cupcakes").version}
 """
 
 options = ["Create cupcake factory", "Create empty project", "Create script workspace", "Exit"]
 
 menu = TerminalMenu(options, menu_cursor_style={"fg_purple"}, menu_highlight_style={"underline", "fg_purple"}, )
 
-options_message = f"""{color}✨
+options_message = f"""{utils.colors.success}✨
 Compile contracts from source:        cupcake bake  || cupcake compile
 Test contracts from source:           cupcake frost || cupcake test
 Deploy contracts from source:         cupcake serve || cupcake deploy
@@ -31,9 +32,9 @@ Run scripts from workspace source:    cupcake shop  || cupcake script
 Install latest version of sol:        cupcake prep  || cupcake install
 ✨"""
 
-bake_message = f"{color}Cupcakes have been successfully baked!"
+bake_message = f"{utils.colors.success}Cupcakes have been successfully baked!"
 
-install_message = f"{color}Latest version of sol installed!"
+install_message = f"{utils.colors.success}Latest version of sol installed!"
 
 def cupcake_factory(name):
     mkdir(f"{name}")
@@ -49,7 +50,7 @@ def cupcake_factory(name):
     mkdir(f"{name}/tests")
     init = open(f"{name}/tests/tests.py", "w")
     init.write(templates.greeter_tests)
-    init_message = f"{color}{name} environment has been created!\n\ncd {name}\n"
+    init_message = f"{utils.colors.success}{name} environment has been created!\n\ncd {name}\n"
     print(init_message)
 
 def empty_project(name):
@@ -66,7 +67,7 @@ def empty_project(name):
     mkdir(f"{name}/tests")
     init = open(f"{name}/tests/tests.py", "w")
     init.write(templates.empty_tests)
-    init_message = f"{color}{name} environment has been created!\n\ncd {name}\n"
+    init_message = f"{utils.colors.success}{name} environment has been created!\n\ncd {name}\n"
     print(init_message)
 
 def script_workspace(name):
@@ -77,17 +78,12 @@ def script_workspace(name):
     mkdir(f"{name}/scripts")
     init = open(f"{name}/scripts/scripts.py", "w")
     init.write(templates.workspace_scripts)
-    init_message = f"{color}{name} workspace has been created!\n\ncd {name}\n"
+    init_message = f"{utils.colors.success}{name} workspace has been created!\n\ncd {name}\n"
     print(init_message)
 
 def bake():
-    init = open("config.yaml", "r")
-    config_file = safe_load(init)
-    try:
-        Compile()
-        print(bake_message)
-    except:
-        print(f"{colors.fail}Failed to bake cupcakes")
+    compiler._compile()
+    print(bake_message)
 
 def frost():
     try:
@@ -98,7 +94,7 @@ def frost():
     if sourceBool == True:
         exec(open("tests/tests.py").read())
     else:
-        print(f"{colors.fail}Failed to frost cupcakes")
+        print(f"{utils.colors.fail}Failed to frost cupcakes")
 
 def serve():
     try:
@@ -109,7 +105,7 @@ def serve():
     if sourceBool == True:
         exec(open("deploy/deploy.py").read())
     else:
-        print(f"{colors.fail}Failed to serve cupcakes")
+        print(f"{utils.colors.fail}Failed to serve cupcakes")
 
 def script():
     try:
@@ -119,32 +115,32 @@ def script():
         sourceBool = True
     except:
         sourceBool = False
-        print(f"{colors.fail}Failed to shop cupcakes")
+        print(f"{utils.colors.fail}Failed to shop cupcakes")
     if sourceBool == True:
         exec(open(f"scripts/{source}.py").read())
 
 def install():
     try:
-        Install()
+        installer._install()
         print(install_message)
     except:
-        print(f"{colors.fail}Failed to prep cupcakes")
+        print(f"{utils.colors.fail}Failed to prep cupcakes")
 
 def main():
     args = argv[1:]
     if len(args) == 0:
-        if config_exists() != True:
+        if utils.config_exists() != True:
             print(init)
             index = menu.show()
             choice = options[index]
             if choice == "Create cupcake factory":
-                name_input = input(f"{color}Project name: ")
+                name_input = input(f"{utils.colors.success}Project name: ")
                 cupcake_factory(name_input)
             if choice == "Create empty project":
-                name_input = input(f"{color}Project name: ")
+                name_input = input(f"{utils.colors.success}Project name: ")
                 empty_project(name_input)
             if choice == "Create script workspace":
-                name_input = input(f"{color}Project name: ")
+                name_input = input(f"{utils.colors.success}Project name: ")
                 script_workspace(name_input)
             if choice == "Exit":
                 system("clear")
