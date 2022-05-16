@@ -1,6 +1,6 @@
 from cupcake import packages
 
-def _provider(p=None):
+def provider(p=None):
     init = open("config.yaml", "r")
     file = packages.safe_load(init)
     try:

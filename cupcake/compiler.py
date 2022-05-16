@@ -1,11 +1,11 @@
-from cupcake import packages, installer, utils
+from cupcake import installer, packages, utils
 
-def _compile(source=None):
+def compile(source=None):
     print(utils.colors.fail, end="\r")
     init = open("config.yaml", "r")
     config_file = packages.safe_load(init)
     version = str(config_file["Solidity"]["Version"])
-    installer._install(version)
+    installer.install(version)
     packages.set_solc_version(version)
     compiler_standard = {
         "language": "Solidity",

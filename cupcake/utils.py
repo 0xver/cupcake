@@ -26,13 +26,13 @@ def config_exists():
     except:
         return False
 
-def _source(path):
+def source(path):
     print(colors.fail, end="\r")
     json_file = open(path, "r")
     json_data = packages.load(json_file)
     return json_data
 
-def _msg(message=None, public_key=None, contract=None, tx=None):
+def msg(message=None, public_key=None, contract=None, tx=None):
     if public_key != None and contract != None:
         print(f"{colors.success}Successfully served cupcakes!\nDeployer account: {public_key}\nContract address: {contract.address}")
     if tx != None:
@@ -42,10 +42,10 @@ def _msg(message=None, public_key=None, contract=None, tx=None):
     if message == "baked":
         print(f"{colors.success}Cupcakes have been successfully baked!")
 
-def _eth(eth):
+def eth(eth):
     print(colors.fail, end="\r")
     wei = int(eth*1000000000000000000)
     return wei
 
-def _p(object):
+def p(object):
     print(f"{colors.success}{object}")

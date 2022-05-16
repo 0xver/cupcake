@@ -1,6 +1,6 @@
 from cupcake import packages, utils
 
-def _account(provider=None):
+def account(provider=None):
     print(utils.colors.fail, end="\r")
     init = open("config.yaml", "r")
     file = packages.safe_load(init)

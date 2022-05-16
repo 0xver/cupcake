@@ -1,11 +1,11 @@
 from cupcake import packages, utils
 
-def _contract(provider=None, address=None, abi=None):
+def contract(provider=None, address=None, abi=None):
     print(utils.colors.fail, end="\r")
     contract = provider.eth.contract(address=address, abi=abi)
     return contract
 
-def _read(contract=None, function=None, args=None, expect=None):
+def read(contract=None, function=None, args=None, expect=None):
     if args != None:
         called = getattr(contract.functions, function)(args).call()
     else:
@@ -20,7 +20,7 @@ def _read(contract=None, function=None, args=None, expect=None):
         print(f"{utils.colors.success}{called}")
         return called
 
-def _write(contract=None, function=None, args=None, value=None, gas=None, caller=None, key_pair=None, provider=None):
+def write(contract=None, function=None, args=None, value=None, gas=None, caller=None, key_pair=None, provider=None):
     print(utils.colors.fail, end="\r")
     if key_pair != None:
         if args != None and value == None:

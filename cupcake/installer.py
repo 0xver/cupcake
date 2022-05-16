@@ -1,6 +1,6 @@
 from cupcake import packages, utils
 
-def _install(v=None):
+def install(v=None):
     print(utils.colors.fail, end="\r")
     if v != None:
         s = str(v)

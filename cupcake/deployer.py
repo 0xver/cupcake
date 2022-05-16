@@ -1,6 +1,6 @@
-from cupcake import packages, compiler, utils
+from cupcake import compiler, packages, utils
 
-def _deploy(source=None, args=None, provider=None, key_pair=None):
+def deploy(source=None, args=None, provider=None, key_pair=None):
     print(utils.colors.fail, end="\r")
     config_init = open("config.yaml", "r")
     config_file = packages.safe_load(config_init)
@@ -8,7 +8,7 @@ def _deploy(source=None, args=None, provider=None, key_pair=None):
         gas_limit = config_file["Gas"]["Limit"]
     except:
         gas_limit = None
-    compiled = compiler._compile(source)
+    compiled = compiler.compile(source)
     source_bytecode = compiled[0]
     source_abi = compiled[1]
     if key_pair != None:

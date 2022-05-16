@@ -2,7 +2,7 @@ from sys import argv
 from os import mkdir, system
 from yaml import safe_load
 from simple_term_menu import TerminalMenu
-from cupcake import compiler, installer, templates, utils
+from cupcake import compile, install, templates, utils
 import pkg_resources
 
 init = f"""{utils.colors.success}
@@ -82,7 +82,7 @@ def script_workspace(name):
     print(init_message)
 
 def bake():
-    compiler._compile()
+    compile()
     print(bake_message)
 
 def frost():
@@ -119,9 +119,9 @@ def script():
     if sourceBool == True:
         exec(open(f"scripts/{source}.py").read())
 
-def install():
+def installation():
     try:
-        installer._install()
+        install()
         print(install_message)
     except:
         print(f"{utils.colors.fail}Failed to prep cupcakes")
@@ -156,7 +156,7 @@ def main():
             elif arg2 == "serve" or arg2 == "deploy":
                 serve()
             elif arg2 == "prep" or arg2 == "install":
-                install()
+                installation()
             elif arg2 == "shop" or arg2 == "script":
                 script()
     except Exception as e:
