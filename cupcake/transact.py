@@ -1,6 +1,6 @@
 from cupcake import packages, utils
 
-def _send(provider=None, to=None, amount=None, gas=None, sender=None, key_pair=None, chain=1):
+def send(provider=None, to=None, amount=None, gas=None, sender=None, key_pair=None, chain=1):
     print(utils.colors.fail, end="\r")
     if chain == 1 or chain == "mainnet":
         chain_id = 1
