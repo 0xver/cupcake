@@ -94,7 +94,7 @@ def frost():
     if sourceBool == True:
         exec(open("tests/tests.py").read())
     else:
-        print(f"{utils.colors.fail}Failed to frost cupcakes")
+        print(f"{utils.colors.fail}Create tests/tests.py to execute script")
 
 def serve():
     try:
@@ -105,7 +105,7 @@ def serve():
     if sourceBool == True:
         exec(open("deploy/deploy.py").read())
     else:
-        print(f"{utils.colors.fail}Failed to serve cupcakes")
+        print(f"{utils.colors.fail}Create deploy/deploy.py to execute script")
 
 def script():
     try:
@@ -115,7 +115,7 @@ def script():
         sourceBool = True
     except:
         sourceBool = False
-        print(f"{utils.colors.fail}Failed to shop cupcakes")
+        print(f"{utils.colors.fail}Update config.yaml to execute script")
     if sourceBool == True:
         exec(open(f"scripts/{source}.py").read())
 
